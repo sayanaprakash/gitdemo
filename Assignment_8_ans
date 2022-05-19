@@ -1,0 +1,44 @@
+c) Find out the average HP (Hit Points) of all the Pokémon
+
+select avg(HP) as Average_HP from pokemon_tbl;
+
+d) Create and insert values of the existing table into a new table with an additional column power_rate into “powerful”, “moderate” and “powerless” from the table “Pokémon”
+
+drop table if exists pokemon_tbl2;
+
+create external table if not exists pokemon_tbl2 (Id int, Name string, Type_1 string, 
+Type_2 string, Total int, HP int, Attack int, Defense int, Sp_Atk int,Sp_Def int, 
+Speed int, Generation int, Legendary boolean, Power_Rate string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
+
+insert overwrite table pokemon_tbl2
+select *, if ( Speed < 60, 'Powerless', 
+if (Speed < 120, 'Moderate', 'Powerful')) from pokemon_tbl;
+
+e) Find out top 10 Pokémon according to their HP
+
+select Name, HP from pokemon_tbl order by HP desc limit 10;
+
+f) Find out top 10 Pokémon based on their Attack stat
+
+select Name, Attack from pokemon_tbl order by Attack desc limit 10;
+
+g) Find out top 15 Pokémon based on their defence stat
+
+select Name, Defence from pokemon_tbl order by Defence desc limit 15;
+
+h) Find out the top 20 Pokémon based on their total power
+
+select Name, Total from pokemon_tbl order by Total desc limit 20;
+
+i) Find out the top 10 Pokémon having a drastic change in their attack and sp.attack
+
+select distinct(Name), abs(Attack-Sp_Atk) as Change from pokemon_tbl order by Change desc limit 10;
+
+j) Find the top 10 Pokémon having a drastic change in their defence and special defence
+
+select distinct(Name), abs(Defense-Sp_Def) as Change_of_Defense from pokemon_tbl order by Change_of_Defense desc limit 10;
+
+
